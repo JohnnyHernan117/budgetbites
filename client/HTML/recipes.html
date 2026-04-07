@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Recipes — BudgetBites</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/pages.css" />
+  <link rel="stylesheet" href="../css/theme-sage.css" />
+
+</head>
+
+<body>
+  <header class="nav">
+    <div class="nav-inner">
+      <a href="dashboard.html" class="brand">BudgetBites</a>
+      <button id="navToggle" class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <nav id="navMenu" class="nav-menu">
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="budget.html" class="nav-link">Budget</a>
+        <a href="pantry.html" class="nav-link">Pantry</a>
+        <a href="recipes.html" class="nav-link active">Recipes</a>
+        <a href="favorites.html" class="nav-link">Favorites</a>
+        <a href="forum.html" class="nav-link">Forum</a>
+        <a href="chef.html" class="nav-link">Chef</a>
+        <a href="profile.html" class="nav-link">Profile</a>
+        <button id="logoutBtn" class="btn small danger" type="button"><span>Log out</span></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container section">
+    <div class="dash-header">
+      <div>
+        <h2>Recipes</h2>
+        <div class="welcome-text" style="margin-top:10px;">
+          Find budget-friendly meals (filter by pantry, time, and cost).
+        </div>
+      </div>
+    </div>
+
+    <article class="card">
+      <div class="title"><span>FILTERS</span><small>demo controls</small></div>
+
+      <div class="grid-2" style="margin-top:12px;">
+        <label class="muted">Max cost per serving ($)
+          <input class="input" type="number" min="0" step="0.01" placeholder="e.g., 2.00" />
+        </label>
+
+        <label class="muted">Max prep time (minutes)
+          <input class="input" type="number" min="0" step="1" placeholder="e.g., 20" />
+        </label>
+      </div>
+
+      <div class="grid-2" style="margin-top:12px;">
+        <label class="muted">Diet preference
+          <select class="select">
+            <option>Any</option>
+            <option>Vegetarian</option>
+            <option>Vegan</option>
+            <option>Gluten-free</option>
+          </select>
+        </label>
+
+        <label class="muted">Use pantry only
+          <select class="select">
+            <option>No</option>
+            <option>Yes</option>
+          </select>
+        </label>
+      </div>
+
+      <button class="btn cyan" type="button" style="margin-top:14px;" id="applyFiltersBtn"><span>Apply filters</span></button>
+      <div class="form-message" id="filterMsg"></div>
+    </article>
+
+    <section class="cards-3">
+      <!--<article class="card sleep">
+        <div class="title"><span>RICE & BEANS BOWL</span><small>$1.20/serving</small></div>
+        <div class="muted" style="margin-top:10px;">⏱ 15 min • pantry-friendly • ⭐ popular</div>
+        <div class="btnrow">
+          <button class="btn" type="button"><span>View</span></button>
+          <button class="btn magenta" type="button"><span>Save</span></button>
+        </div>
+      </article>
+
+      <article class="card energy">
+        <div class="title"><span>EGG FRIED RICE</span><small>$1.50/serving</small></div>
+        <div class="muted" style="margin-top:10px;">⏱ 20 min • protein • flexible</div>
+        <div class="btnrow">
+          <button class="btn" type="button"><span>View</span></button>
+          <button class="btn magenta" type="button"><span>Save</span></button>
+        </div>
+      </article>
+
+      <article class="card exercise">
+        <div class="title"><span>PASTA + GARLIC OIL</span><small>$0.95/serving</small></div>
+        <div class="muted" style="margin-top:10px;">⏱ 12 min • cheap • minimal</div>
+        <div class="btnrow">
+          <button class="btn" type="button"><span>View</span></button>
+          <button class="btn magenta" type="button"><span>Save</span></button>
+        </div>
+      </article>-->
+    </section>
+
+    <article class="card" style="margin-top:24px;">
+      <div class="title"><span>RECIPE DETAILS</span><small>modal or expand later</small></div>
+      <p class="muted" style="margin-top:10px;">
+        For MVP, show details in a simple section or modal: ingredients, steps, substitutions, and a “Save” button.
+      </p>
+      <div class="btnrow">
+        <a class="btn cyan" href="chef.html" style="text-decoration:none;"><span>Ask Chef for more</span></a>
+        <a class="btn" href="favorites.html" style="text-decoration:none;"><span>View Favorites</span></a>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <h3 class="footer-brand">BudgetBites</h3>
+        <p>Budget meals, pantry-based recipes, and a little encouragement along the way.</p>
+      </div>
+      <div class="footer-links">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="budget.html">Budget</a>
+        <a href="pantry.html">Pantry</a>
+        <a href="recipes.html">Recipes</a>
+        <a href="favorites.html">Favorites</a>
+        <a href="forum.html">Forum</a>
+        <a href="chef.html">Chef</a>
+        <a href="profile.html">Profile</a>
+      </div>
+      <div class="footer-right">
+        <p>© <span id="year"></span> BudgetBites. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <div id="recipeModal" class="modal hidden">
+    <div class="modal-content">
+      <h3 id="modalTitle"></h3>
+      <p id="modalMeta"></p>
+      <div id="modalBody"></div>
+      <button class="btn" id="closeModal"><span>Close</span></button>
+    </div>
+  </div>
+
+  <script src="../js/app.js"></script>
+  <script src="../js/demoData.js"></script>
+  <script src="../js/recipes.js"></script>
+
+</body>
+</html>

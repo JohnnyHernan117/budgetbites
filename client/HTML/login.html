@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login — BudgetBites</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Existing site styles -->
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/pages.css" />
+  <link rel="stylesheet" href="../css/theme-sage.css" />
+</head>
+
+<body>
+  <main class="auth-section" id="auth">
+    <header class="auth-header">
+      <h1 class="auth-title">BudgetBites</h1>
+      <p class="auth-subtitle">Log in to save your pantry, budget, and favorites.</p>
+    </header>
+
+    <section class="auth-container">
+      <!-- LOGIN -->
+      <article class="auth-card">
+        <div class="auth-card-header">
+          <h2>Welcome back</h2>
+          <p>Log in to continue.</p>
+        </div>
+
+        <form id="loginForm" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="email">Email</label>
+            <input class="form-input" id="email" type="email" placeholder="you@example.com" autocomplete="email" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="password">Password</label>
+            <div class="password-wrapper">
+              <input class="form-input" id="password" type="password" placeholder="••••••••" autocomplete="current-password" />
+              <button class="password-toggle" type="button" id="togglePw" aria-label="Show password">
+                <span class="eye-icon">👁</span>
+              </button>
+            </div>
+          </div>
+
+          <button class="btn-full btn-primary bb-auth-primary" type="submit" id="loginBtn">
+            <span>Log in</span>
+          </button>
+
+          <div class="form-message" id="loginMsg"></div>
+        </form>
+      </article>
+
+      <!-- SIGNUP -->
+      <article class="auth-card">
+        <div class="auth-card-header">
+          <h2>Create account</h2>
+          <p>Sign up to start using BudgetBites.</p>
+        </div>
+
+        <form id="signupForm" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="signupName">Display name</label>
+            <input class="form-input" id="signupName" type="text" placeholder="Guest" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="signupEmail">Email</label>
+            <input class="form-input" id="signupEmail" type="email" placeholder="you@example.com" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="signupPassword">Password</label>
+            <input class="form-input" id="signupPassword" type="password" placeholder="Create a password" />
+          </div>
+
+          <button class="btn-full btn-secondary bb-auth-secondary" type="submit" id="signupBtn">
+            <span>Create account</span>
+          </button>
+
+          <div class="form-message" id="signupMsg"></div>
+        </form>
+
+        <div class="card" style="margin-top:18px; padding:18px; background: rgba(255,255,255,0.75);">
+          <div class="title" style="margin:0;">
+            <span>What you’ll get</span>
+            <small>in MVP</small>
+          </div>
+          <ul class="muted" style="margin-top:10px; padding-left:18px; line-height:1.55;">
+            <li>Pantry tracking</li>
+            <li>Budget logging</li>
+            <li>Recipe browsing + favorites</li>
+            <li>Budget Chef suggestions</li>
+          </ul>
+        </div>
+      </article>
+    </section>
+
+    <footer class="muted" style="margin-top:26px; font-size:.9rem;">
+      © <span id="year"></span> BudgetBites
+    </footer>
+  </main>
+  
+<script src="../js/login.js"></script>
+</body>
+</html>
