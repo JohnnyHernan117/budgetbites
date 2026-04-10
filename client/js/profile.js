@@ -1,4 +1,6 @@
 (function () {
+  const API_BASE = "https://budgetbites-api.onrender.com/api";
+
   const msg = (id, text, ok = true) => {
     const el = document.getElementById(id);
     if (!el) return;
@@ -49,7 +51,7 @@
     if (!confirmed) return;
 
     try {
-      const res = await fetch("http://localhost:3000/api/reset-demo", {
+      const res = await fetch(`${API_BASE}/reset-demo`, {
         method: "POST",
         headers: authHeaders()
       });

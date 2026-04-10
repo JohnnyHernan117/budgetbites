@@ -10,8 +10,7 @@
   const selects = document.querySelectorAll(".select");
   const dietSelect = selects[0];
   const pantryOnlySelect = selects[1];
-  const API_BASE = "http://localhost:3000/api";
-  let pantryNames = [];
+  const API_BASE = "https://budgetbites-api.onrender.com/api";  let pantryNames = [];
 
   async function loadPantryNames() {
     try {
@@ -132,7 +131,7 @@
     };
 
     try {
-      const res = await fetch("http://localhost:3000/api/favorites", {
+      const res = await fetch(`${API_BASE}/favorites`, {
         method: "POST",
         headers: authHeaders({
           "Content-Type": "application/json"

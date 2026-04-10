@@ -1,6 +1,5 @@
 (function () {
-  const API_BASE = "http://localhost:3000/api";
-
+  const API_BASE = "https://budgetbites-api.onrender.com/api";
   const postsList = document.getElementById("forumPostsList");
   const form = document.getElementById("forumPostForm");
   const titleInput = document.getElementById("forumTitle");

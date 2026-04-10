@@ -1,5 +1,5 @@
 (function () {
-  const API_BASE = "http://localhost:3000/api";
+  const API_BASE = "https://budgetbites-api.onrender.com/api";
   const $ = (id) => document.getElementById(id);
 
   function esc(s) {

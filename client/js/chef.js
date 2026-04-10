@@ -4,7 +4,7 @@
   };
 
   const $ = (id) => document.getElementById(id);
-  const API_BASE = "http://localhost:3000/api";
+  const API_BASE = "https://budgetbites-api.onrender.com/api";
 
   function authHeaders(extra = {}) {
     const token = localStorage.getItem("bb_token");
@@ -48,12 +48,12 @@
     }
   }
     async function fetchChefSuggestions(payload) {
-    const res = await fetch("http://localhost:3000/api/chef", {
-      method: "POST",
-      headers: authHeaders({
-        "Content-Type": "application/json",
-      }),
-      body: JSON.stringify(payload),
+        const res = await fetch(`${API_BASE}/chef`, {     
+        method: "POST",
+        headers: authHeaders({
+          "Content-Type": "application/json",
+        }),
+        body: JSON.stringify(payload),
     });
 
     if (!res.ok) {
@@ -186,7 +186,7 @@
     };
 
     try {
-      const res = await fetch("http://localhost:3000/api/favorites", {
+      const res = await fetch(`${API_BASE}/favorites`, {
         method: "POST",
         headers: authHeaders({
           "Content-Type": "application/json"
@@ -220,7 +220,7 @@
     localStorage.setItem("bb.lastCooked.v1", JSON.stringify(lastCooked));
 
     try {
-      const res = await fetch(`http://localhost:3000/api/favorites/${encodeURIComponent(recipe.id || recipe.name)}/cook`, {
+      const res = await fetch(`${API_BASE}/favorites/${encodeURIComponent(recipe.id || recipe.name)}/cook`, {
         method: "PATCH",
         headers: authHeaders()
       });
@@ -228,7 +228,7 @@
       if (res.status === 404) {
         await saveFavorite(recipe);
 
-        const retry = await fetch(`http://localhost:3000/api/favorites/${encodeURIComponent(recipe.id || recipe.name)}/cook`, {
+        const retry = await fetch(`${API_BASE}/favorites/${encodeURIComponent(recipe.id || recipe.name)}/cook`, {
           method: "PATCH",
           headers: authHeaders()
         });

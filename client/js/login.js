@@ -1,6 +1,6 @@
 document.getElementById("year").textContent = new Date().getFullYear();
 
-const API_BASE = "http://localhost:3000/api";
+const API_BASE = "https://budgetbites-api.onrender.com/api";
 
 const msg = (id, text, ok = true) => {
   const el = document.getElementById(id);

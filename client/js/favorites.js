@@ -1,8 +1,7 @@
 (function () {
   const LS_KEY = "bb.favorites.v1";
   const container = document.querySelector(".cards-3");
-  const API_BASE = "http://localhost:3000/api";
-
+  const API_BASE = "https://budgetbites-api.onrender.com/api";
   function writeJSON(key, value) {
     localStorage.setItem(key, JSON.stringify(value));
   }

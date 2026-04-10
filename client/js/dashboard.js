@@ -1,7 +1,6 @@
 (function () {
   const $ = (id) => document.getElementById(id);
-  const API_BASE = "http://localhost:3000/api";
-
+  const API_BASE = "https://budgetbites-api.onrender.com/api";
   function readJSON(key, fallback) {
     try {
       const raw = localStorage.getItem(key);
