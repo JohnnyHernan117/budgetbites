@@ -28,6 +28,33 @@
     localStorage.setItem(key, JSON.stringify(value));
   }
 
+  function estimateIngredientPrice(name) {
+    const n = String(name || "").toLowerCase();
+
+    if (n.includes("rice")) return 1.20;
+    if (n.includes("beans")) return 1.50;
+    if (n.includes("egg")) return 2.80;
+    if (n.includes("pasta") || n.includes("spaghetti")) return 1.00;
+    if (n.includes("tortilla")) return 2.50;
+    if (n.includes("cheese")) return 3.20;
+    if (n.includes("milk")) return 2.40;
+    if (n.includes("chicken")) return 5.50;
+    if (n.includes("tuna")) return 1.75;
+    if (n.includes("garlic")) return 0.75;
+    if (n.includes("oil")) return 0.60;
+    if (n.includes("onion")) return 0.90;
+    if (n.includes("soy sauce")) return 2.25;
+    if (n.includes("frozen veg")) return 2.00;
+    if (n.includes("black beans")) return 1.60;
+
+    return 1.99;
+  }
+
+  function formatMoney(value) {
+    const num = Number(value || 0);
+    return `$${num.toFixed(2)}`;
+  }
+
   async function fetchPantryItems() {
     try {
       const res = await fetch(`${API_BASE}/pantry`, {
@@ -260,18 +287,49 @@
       return;
     }
 
-    const cost = Number(r.costPerServing || 0);
-    const mins = Number(r.minutes || 0);
-    const ing = (r.ingredients || []).slice(0, 4);
-    const sub = (r.substitutions || []).slice(0, 2);
+  const cost = Number(r.costPerServing || 0);
+  const mins = Number(r.minutes || 0);
+  const ing = Array.isArray(r.ingredients) ? r.ingredients.slice(0, 5) : [];
+  const sub = Array.isArray(r.substitutions) ? r.substitutions.slice(0, 2) : [];
 
-    o.meta.textContent = `$${cost.toFixed(2)}/serving • ${mins} min`;
-    o.name.textContent = r.name || "Untitled option";
+  const pricedIngredients = ing.map((item) => {
+    const price = estimateIngredientPrice(item);
+    return {
+      name: item,
+      price
+    };
+  });
 
-    o.text.innerHTML = `
-      <div><strong>Ingredients:</strong> ${ing.length ? ing.join(", ") : "—"}</div>
-      <div style="margin-top:6px;"><strong>Substitutions:</strong> ${sub.length ? sub.join(", ") : "—"}</div>
-    `;
+  const totalEstimated = pricedIngredients.reduce((sum, item) => sum + item.price, 0);
+
+  o.meta.textContent = `${formatMoney(cost)}/serving • ${mins} min`;
+  o.name.textContent = r.name || "Untitled option";
+
+  o.text.innerHTML = `
+    <div><strong>Ingredients:</strong></div>
+    <ul style="margin:8px 0 10px 18px; padding:0;">
+      ${
+        pricedIngredients.length
+          ? pricedIngredients
+              .map(
+                (item) =>
+                  `<li>${item.name} — <span class="muted">${formatMoney(item.price)}</span></li>`
+              )
+              .join("")
+          : "<li>—</li>"
+      }
+    </ul>
+
+    <div style="margin-top:6px;">
+      <strong>Estimated total ingredient cost:</strong>
+      <span class="muted">${formatMoney(totalEstimated)}</span>
+    </div>
+
+    <div style="margin-top:6px;">
+      <strong>Substitutions:</strong>
+      ${sub.length ? sub.join(", ") : "—"}
+    </div>
+  `;
   });
 }
 
@@ -401,29 +459,6 @@
       cookRecipe(r);
     });
   });
-
-  async function checkPrice() {
-    const ingredient = document.getElementById("ingredientSearch").value;
-
-    const res = await fetch(
-      `https://budgetbites-api.onrender.com/api/ingredient-price?name=${ingredient}`
-    );
-
-    const data = await res.json();
-
-    const resultsDiv = document.getElementById("priceResults");
-    resultsDiv.innerHTML = "";
-    
-    data.forEach(item => {
-      resultsDiv.innerHTML += `
-        <div>
-          <img src="${item.image}" width="60">
-          <p>${item.name}</p>
-          <p>Price: ${item.price}</p>
-        </div>
-      `;
-    });
-  }
 
   setStatus("Fallback ready");
   renderConstraintSummary();
