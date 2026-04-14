@@ -133,7 +133,6 @@
           <small>structured output</small>
         </div>
         <a class="tiny-link" href="favorites.html">View Favorites</a>
-      </div>
 
       <div class="chef-cards">
         <article class="card chef-option" id="opt1">
@@ -166,6 +165,19 @@
           </div>
         </article>
       </div>
+      </div> 
+      <!-- end chef-cards -->
+
+      <hr style="margin-top:25px;">
+
+      <h3>Ingredient Price Checker</h3>
+
+      <input class="input" id="ingredientSearch" placeholder="Enter ingredient (eggs, rice, milk)" />
+      <button class="btn cyan small" onclick="checkPrice()">Check Price</button>
+
+      <div id="priceResults" style="margin-top:15px;"></div>
+
+        </section>
     </section>
   </main>
 
@@ -180,13 +192,6 @@
       </div>
     </div>
   </footer>
-
-  <h3>Ingredient Price Checker</h3>
-
-  <input id="ingredientSearch" placeholder="Enter ingredient" />
-  <button onclick="checkPrice()">Check Price</button>
-
-  <div id="priceResults"></div>
 
   <script src="../js/app.js"></script>
   <script src="../js/demoData.js"></script>
