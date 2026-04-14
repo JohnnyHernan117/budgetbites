@@ -726,6 +726,7 @@ app.get("/api/forum", async (_req, res) => {
         title,
         body,
         tags,
+        author_name AS "authorName",
         created_at AS "createdAt"
       FROM forum_posts
       ORDER BY created_at DESC
@@ -739,7 +740,7 @@ app.get("/api/forum", async (_req, res) => {
 });
 
 // Create post
-app.post("/api/forum", async (req, res) => {
+app.post("/api/forum", requireAuth, async (req, res) => {
   try {
     const { id, title, body, tags = [] } = req.body || {};
 
@@ -749,16 +750,17 @@ app.post("/api/forum", async (req, res) => {
 
     const result = await pool.query(
       `
-      INSERT INTO forum_posts (id, title, body, tags)
-      VALUES ($1, $2, $3, $4)
+      INSERT INTO forum_posts (id, user_id, author_name, title, body, tags)
+      VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING
         id,
         title,
         body,
         tags,
+        author_name AS "authorName",
         created_at AS "createdAt"
       `,
-      [id, title, body, tags]
+      [id, req.user.userId, req.user.name, title, body, tags]
     );
 
     res.status(201).json(result.rows[0]);
