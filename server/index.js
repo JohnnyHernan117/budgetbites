@@ -57,6 +57,8 @@ app.get("/api/favorites", requireAuth, async (req, res) => {
         steps,
         substitutions,
         tags,
+        priced_ingredients AS "pricedIngredients",
+        estimated_total_cost AS "estimatedTotalCost",
         saved_at AS "savedAt",
         cooked_count AS "cookedCount"
       FROM favorites
@@ -84,6 +86,8 @@ app.post("/api/favorites", requireAuth, async (req, res) => {
       steps = [],
       substitutions = [],
       tags = [],
+      pricedIngredients = [],
+      estimatedTotalCost = 0,
       savedAt,
       cookedCount = 0,
     } = req.body || {};
@@ -96,11 +100,11 @@ app.post("/api/favorites", requireAuth, async (req, res) => {
       `
       INSERT INTO favorites (
         id, user_id, name, minutes, cost_per_serving, description,
-        ingredients, steps, substitutions, tags, saved_at, cooked_count
+        ingredients, steps, substitutions, tags, priced_ingredients, estimated_total_cost, saved_at, cooked_count
       )
       VALUES (
         $1, $2, $3, $4, $5, $6,
-        $7::jsonb, $8::jsonb, $9::jsonb, $10::jsonb, COALESCE($11::timestamp, NOW()), $12
+        $7::jsonb, $8::jsonb, $9::jsonb, $10::jsonb, $11::jsonb, $12, COALESCE($13::timestamp, NOW()), $14
       )
       RETURNING
         id,
@@ -112,6 +116,8 @@ app.post("/api/favorites", requireAuth, async (req, res) => {
         steps,
         substitutions,
         tags,
+        priced_ingredients AS "pricedIngredients",
+        estimated_total_cost AS "estimatedTotalCost",
         saved_at AS "savedAt",
         cooked_count AS "cookedCount"
       `,
@@ -126,6 +132,8 @@ app.post("/api/favorites", requireAuth, async (req, res) => {
         JSON.stringify(steps),
         JSON.stringify(substitutions),
         JSON.stringify(tags),
+        JSON.stringify(pricedIngredients),
+        estimatedTotalCost ?? 0,
         savedAt ?? null,
         cookedCount,
       ]
