@@ -51,6 +51,41 @@
     return 1.25;
   }
 
+  function ingredientMatchesPantry(ingredient, pantryItems) {
+    const ing = String(ingredient || "").toLowerCase();
+    return pantryItems.some((p) => {
+      const item = String(p || "").toLowerCase();
+      return ing.includes(item) || item.includes(ing);
+    });
+  }
+
+  function calculateSavings(ingredients, pantryItems) {
+    const priced = ingredients.map((item) => {
+      const price = estimateIngredientPrice(item);
+      const inPantry = ingredientMatchesPantry(item, pantryItems);
+
+      return {
+        name: item,
+        price,
+        inPantry
+      };
+    });
+
+    const totalEstimated = priced.reduce((sum, item) => sum + item.price, 0);
+    const pantrySavings = priced
+      .filter((item) => item.inPantry)
+      .reduce((sum, item) => sum + item.price, 0);
+
+    const outOfPocket = totalEstimated - pantrySavings;
+
+    return {
+      priced,
+      totalEstimated,
+      pantrySavings,
+      outOfPocket
+    };
+  }
+
   function formatMoney(value) {
     const num = Number(value || 0);
     return `$${num.toFixed(2)}`;
@@ -284,63 +319,67 @@
   }
 
   function renderPicks(picks) {
-  currentPicks = picks;
-  writeJSON(LS.lastPicks, currentPicks);
+    currentPicks = picks;
+    writeJSON(LS.lastPicks, currentPicks);
+    const pantryItems = (window.currentPantryItems || []).map((x) => String(x));
+    optionEls.forEach((o, idx) => {
+      const r = picks[idx];
+      if (!o) return;
 
-  optionEls.forEach((o, idx) => {
-    const r = picks[idx];
-    if (!o) return;
-
-    if (!r) {
-      o.meta.textContent = "—";
-      o.name.textContent = "—";
-      o.text.innerHTML = "Run a prompt to see results.";
-      return;
-    }
-
-  const cost = Number(r.costPerServing || 0);
-  const mins = Number(r.minutes || 0);
-  const ing = Array.isArray(r.ingredients) ? r.ingredients.slice(0, 5) : [];
-  const sub = Array.isArray(r.substitutions) ? r.substitutions.slice(0, 2) : [];
-
-  const pricedIngredients = ing.map((item) => {
-    const price = estimateIngredientPrice(item);
-    return {
-      name: item,
-      price
-    };
-  });
-
-  const totalEstimated = pricedIngredients.reduce((sum, item) => sum + item.price, 0);
-
-  o.meta.textContent = `${formatMoney(cost)}/serving • ${mins} min`;
-  o.name.textContent = r.name || "Untitled option";
-
-  o.text.innerHTML = `
-    <div><strong>Ingredients:</strong></div>
-    <ul style="margin:8px 0 10px 18px; padding:0;">
-      ${
-        pricedIngredients.length
-          ? pricedIngredients
-              .map(
-                (item) =>
-                  `<li>${item.name} — <span class="muted">${formatMoney(item.price)}</span></li>`
-              )
-              .join("")
-          : "<li>—</li>"
+      if (!r) {
+        o.meta.textContent = "—";
+        o.name.textContent = "—";
+        o.text.innerHTML = "Run a prompt to see results.";
+        return;
       }
-    </ul>
 
-    <div style="margin-top:6px;">
-      <strong>Estimated total ingredient cost:</strong>
-      <span class="muted">${formatMoney(totalEstimated)}</span>
-    </div>
+    const cost = Number(r.costPerServing || 0);
+    const mins = Number(r.minutes || 0);
+    const ing = Array.isArray(r.ingredients) ? r.ingredients : [];
+    const sub = Array.isArray(r.substitutions) ? r.substitutions.slice(0, 2) : [];
 
-    <div style="margin-top:6px;">
-      <strong>Substitutions:</strong>
-      ${sub.length ? sub.join(", ") : "—"}
-    </div>
-  `;
+    const pricing = calculateSavings(ing, pantryItems);
+
+    o.meta.textContent = `${formatMoney(cost)}/serving • ${mins} min`;
+    o.name.textContent = r.name || "Untitled option";
+
+    o.text.innerHTML = `
+      <div><strong>Ingredients:</strong></div>
+      <ul style="margin:8px 0 10px 18px; padding:0;">
+        ${
+          pricing.priced.length
+            ? pricing.priced
+                .map(
+                  (item) =>
+                    `<li>${item.name} — <span class="muted">${formatMoney(item.price)}</span>${
+                      item.inPantry ? ` <strong style="color:var(--success);">(in pantry)</strong>` : ""
+                    }</li>`
+                )
+                .join("")
+            : "<li>—</li>"
+        }
+      </ul>
+
+      <div style="margin-top:6px;">
+        <strong>Estimated total ingredient cost:</strong>
+        <span class="muted">${formatMoney(pricing.totalEstimated)}</span>
+      </div>
+
+      <div style="margin-top:6px;">
+        <strong>Pantry savings:</strong>
+        <span class="muted">${formatMoney(pricing.pantrySavings)}</span>
+      </div>
+
+      <div style="margin-top:6px;">
+        <strong>Estimated out-of-pocket cost:</strong>
+        <span class="muted">${formatMoney(pricing.outOfPocket)}</span>
+      </div>
+
+      <div style="margin-top:6px;">
+        <strong>Substitutions:</strong>
+        ${sub.length ? sub.join(", ") : "—"}
+      </div>
+    `;
   });
 }
 
@@ -376,6 +415,8 @@
     try {
       setStatus("Generating with AI...");
       const pantryItems = wantPantryOnly ? await fetchPantryItems() : [];
+
+      window.currentPantryItems = pantryItems;
 
       const payload = {
         prompt: userPrompt,
@@ -449,6 +490,24 @@
     clearOptions();
     renderConstraintSummary();
     showMsg("Cleared.", true);
+  });
+
+  $("pantryChefBtn")?.addEventListener("click", async () => {
+    const pantryItems = await fetchPantryItems();
+    window.currentPantryItems = pantryItems;
+
+    if (!pantryItems.length) {
+      showMsg("Your pantry is empty. Add items first.", false);
+      return;
+    }
+
+    if (promptInput && !promptInput.value.trim()) {
+      promptInput.value = "Suggest 3 affordable meals using only my pantry items.";
+    }
+
+    if (pantryOnly) pantryOnly.value = "yes";
+
+    $("chefGoBtn")?.click();
   });
 
   optionEls.forEach((o, idx) => {
