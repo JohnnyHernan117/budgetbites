@@ -11,6 +11,14 @@
     return String(s || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
 
+  function authHeaders(extra = {}) {
+    const token = localStorage.getItem("bb_token");
+    return {
+      ...extra,
+      Authorization: `Bearer ${token}`
+    };
+  }
+
   function msg(text, ok = true) {
     if (!msgEl) return;
     msgEl.textContent = text;
@@ -58,8 +66,7 @@
             </div>
 
             <div class="muted" style="margin-top:6px;font-size:.92rem;">
-              Posted by <strong>${esc(localStorage.getItem("bb_user") || "BudgetBites User")}</strong>
-            </div>
+              Posted by <strong>${esc(p.authorName || "BudgetBites User")}</strong>            </div>
 
             <div style="margin-top:10px;line-height:1.5;color:var(--text);">
               ${esc(p.body)}
@@ -118,9 +125,9 @@
     try {
       const res = await fetch(`${API_BASE}/forum`, {
         method: "POST",
-        headers: {
+        headers: authHeaders({
           "Content-Type": "application/json"
-        },
+        }),
         body: JSON.stringify(payload)
       });
 
