@@ -402,6 +402,29 @@
     });
   });
 
+  async function checkPrice() {
+    const ingredient = document.getElementById("ingredientSearch").value;
+
+    const res = await fetch(
+      `https://budgetbites-api.onrender.com/api/ingredient-price?name=${ingredient}`
+    );
+
+    const data = await res.json();
+
+    const resultsDiv = document.getElementById("priceResults");
+    resultsDiv.innerHTML = "";
+    
+    data.forEach(item => {
+      resultsDiv.innerHTML += `
+        <div>
+          <img src="${item.image}" width="60">
+          <p>${item.name}</p>
+          <p>Price: ${item.price}</p>
+        </div>
+      `;
+    });
+  }
+
   setStatus("Fallback ready");
   renderConstraintSummary();
 

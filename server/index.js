@@ -760,6 +760,30 @@ app.post("/api/forum", async (req, res) => {
   }
 });
 
+app.get("/api/ingredient-price", async (req, res) => {
+  try {
+    const ingredient = req.query.name;
+
+    const response = await fetch(
+      `https://api.spoonacular.com/food/products/search?query=${ingredient}&number=5&apiKey=${process.env.SPOONACULAR_API_KEY}`
+    );
+
+    const data = await response.json();
+
+    const results = data.products.map(p => ({
+      name: p.title,
+      price: p.price || "Unknown",
+      image: p.image
+    }));
+
+    res.json(results);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Price lookup failed" });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`BudgetBites server running on http://localhost:${PORT}`);
 });
