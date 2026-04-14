@@ -31,23 +31,24 @@
   function estimateIngredientPrice(name) {
     const n = String(name || "").toLowerCase();
 
+    if (n.includes("tuna")) return 1.75;
+    if (n.includes("chickpea")) return 1.50;
+    if (n.includes("bean")) return 1.50;
     if (n.includes("rice")) return 1.20;
-    if (n.includes("beans")) return 1.50;
     if (n.includes("egg")) return 2.80;
     if (n.includes("pasta") || n.includes("spaghetti")) return 1.00;
     if (n.includes("tortilla")) return 2.50;
     if (n.includes("cheese")) return 3.20;
     if (n.includes("milk")) return 2.40;
-    if (n.includes("chicken")) return 5.50;
-    if (n.includes("tuna")) return 1.75;
+    if (n.includes("onion")) return 0.90;
     if (n.includes("garlic")) return 0.75;
     if (n.includes("oil")) return 0.60;
-    if (n.includes("onion")) return 0.90;
-    if (n.includes("soy sauce")) return 2.25;
-    if (n.includes("frozen veg")) return 2.00;
-    if (n.includes("black beans")) return 1.60;
+    if (n.includes("lemon")) return 0.50;
+    if (n.includes("yogurt") || n.includes("mayo")) return 1.25;
+    if (n.includes("vinegar")) return 0.50;
+    if (n.includes("carrot")) return 0.70;
 
-    return 1.99;
+    return 1.25;
   }
 
   function formatMoney(value) {
@@ -198,27 +199,6 @@
   }
 
   async function saveFavorite(recipe) {
-    function estimateIngredientPrice(name) {
-      const n = String(name || "").toLowerCase();
-
-      if (n.includes("rice")) return 1.20;
-      if (n.includes("beans")) return 1.50;
-      if (n.includes("egg")) return 2.80;
-      if (n.includes("pasta") || n.includes("spaghetti")) return 1.00;
-      if (n.includes("tortilla")) return 2.50;
-      if (n.includes("cheese")) return 3.20;
-      if (n.includes("milk")) return 2.40;
-      if (n.includes("chicken")) return 5.50;
-      if (n.includes("tuna")) return 1.75;
-      if (n.includes("garlic")) return 0.75;
-      if (n.includes("oil")) return 0.60;
-      if (n.includes("onion")) return 0.90;
-      if (n.includes("soy sauce")) return 2.25;
-      if (n.includes("frozen veg")) return 2.00;
-      if (n.includes("black beans")) return 1.60;
-
-      return 1.99;
-    }
     const ingredients = Array.isArray(recipe.ingredients) ? recipe.ingredients : [];
     const pricedIngredients = ingredients.map((item) => ({
       name: item,
