@@ -52,10 +52,12 @@
           Number.isFinite(Number(f.minutes)) ? ` • ${f.minutes} min` : ""
         }`;
         const desc = esc(f.description || "Saved recipe.");
+        const totalCost = Number(f.estimatedTotalCost || 0);
         return `
           <article class="card sleep" data-id="${esc(f.id || f.name)}">
             <div class="title"><span>${title}</span><small>${meta}</small></div>
             <p class="muted" style="margin-top:10px;">${desc}</p>
+            <p class="muted" style="margin-top:6px;">Estimated total: ${money(totalCost)}</p>
             <div class="btnrow">
               <button class="btn cyan" type="button" data-action="cook"><span>Cook again</span></button>
               <button class="btn" type="button" data-action="view"><span>View</span></button>
@@ -68,6 +70,7 @@
   }
 
   async function loadFavorites() {
+
     try {
       const res = await fetch(`${API_BASE}/favorites`, {
         headers: authHeaders()
