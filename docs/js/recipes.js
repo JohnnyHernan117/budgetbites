@@ -274,7 +274,9 @@
     const id = card?.getAttribute("data-id");
     if (!id) return;
 
-    const recipes = window.DEMO?.recipes || [];
+    const demo = window.DEMO?.recipes || [];
+    const recipes = [...demo, ...favorites];
+
     const recipe = recipes.find((r) => String(r.id || r.name) === id);
     if (!recipe) return;
 
