@@ -29,6 +29,15 @@
     }
   }
 
+  let favorites = [];
+
+  async function loadFavorites() {
+    const res = await fetch(`${API_BASE}/favorites`, {
+      headers: authHeaders()
+    });
+    favorites = await res.json();
+  }
+
   function authHeaders(extra = {}) {
     const token = localStorage.getItem("bb_token");
     return {
@@ -163,6 +172,10 @@
     openModal(recipe);
   }
 
+  function isFavorite(id) {
+    return favorites.some(f => String(f.id) === String(id));
+  }
+
   function renderRecipes(recipes) {
     if (!cardsContainer) return;
 
@@ -181,6 +194,7 @@
 
     cardsContainer.innerHTML = recipes
       .map((r, idx) => {
+        const saved = isFavorite(r.id || r.name);
         const tone = idx % 3 === 0 ? "sleep" : idx % 3 === 1 ? "energy" : "exercise";
         const tagText = (r.tags || []).join(" • ");
         const matchedCount = (r.ingredients || []).filter(ingredientInPantry).length;
@@ -207,8 +221,10 @@
             }
             <div class="btnrow">
               <button class="btn" type="button" data-action="view"><span>View</span></button>
-              <button class="btn magenta" type="button" data-action="save"><span>Save</span></button>
-            </div>
+              <button class="btn magenta" type="button" data-action="save" ${saved ? "disabled" : ""}>
+                <span>${saved ? "Saved" : "Save"}</span>
+              </button>           
+             </div>
           </article>
         `;
       })
@@ -216,7 +232,9 @@
   }
 
   function applyFilters() {
-    const recipes = window.DEMO?.recipes || [];
+    const demo = window.DEMO?.recipes || [];
+    const recipes = [...demo, ...favorites];
+
     let filtered = recipes.slice();
 
     const maxCost = parseFloat(costInput?.value || "");
@@ -309,6 +327,19 @@
   // initial render
   (async function initRecipes() {
     await loadPantryNames();
-    renderRecipes(window.DEMO?.recipes || []);
+    await loadFavorites(); // 👈 ADD THIS
+
+    const demo = window.DEMO?.recipes || [];
+
+    // 🔥 Step 2 goes HERE
+    const merged = [...demo];
+
+    favorites.forEach(f => {
+      if (!merged.some(r => String(r.id || r.name) === String(f.id))) {
+        merged.push(f);
+      }
+    });
+
+    renderRecipes(merged); // 👈 use merged instead of demo
   })();
 })();
