@@ -36,7 +36,8 @@
       headers: authHeaders()
     });
     favorites = await res.json();
-  }
+    console.log("FAVORITES: ", favorites);
+    }
 
   function authHeaders(extra = {}) {
     const token = localStorage.getItem("bb_token");
